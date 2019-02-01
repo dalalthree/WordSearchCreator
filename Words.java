@@ -35,7 +35,21 @@ public class Words {
         pm.pgen();
         System.out.println(pm);
     }
-    
+    public static <T> int randomIndex(ArrayList<T> list)
+    {
+        return 0 + (int)Math.floor(Math.random()* ((list.size() - 1) - 0 + 1));
+    }
+    public static char randomLetter()
+    {
+        final int MIN_LETTER = 'A';
+        final int MAX_LETTER = 'Z';
+        
+        return (char)(MIN_LETTER + (int)Math.floor(Math.random() * (MAX_LETTER - MIN_LETTER + 1)));
+    }
+    public static int RandomDir()
+    {
+        return PuzzleMaker.MIN_DIR + (int)Math.floor(Math.random() * (PuzzleMaker.MAX_DIR - PuzzleMaker.MIN_DIR + 1));
+    }
     public static void getWords()
     {
         Scanner sc = new Scanner(System.in);

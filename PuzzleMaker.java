@@ -14,19 +14,23 @@ import java.awt.Point;
  */
 public class PuzzleMaker {
     private char[][] puzzle;
+    private char[][] key;
     
     private final static char NO_LETTER = '?';
     
     private static final int DIR_RIGHT = 0;
     private static final int DIR_DOWN = 1;
+    private static final int DIR_LEFT = 2;
+    private static final int DIR_UP = 3;
     public static final int MIN_DIR = 0;
-    public static final int MAX_DIR = 1;
+    public static final int MAX_DIR = 3;
     
     ArrayList<WPI> my_wpis;
     
     public PuzzleMaker()
     {
         puzzle = new char[Words.SizeY][Words.SizeX];
+        key = new char[Words.SizeY][Words.SizeX];
         my_wpis = new ArrayList<>();
         resetPuzzle();
     }
@@ -54,8 +58,19 @@ public class PuzzleMaker {
             }
         }
         
+        copyAnswers();
         fillRestOfPuzzleWithRandomLetters();
         return true;
+    }
+    private void copyAnswers()
+    {
+      for(int i = 0; i < puzzle.length; i ++)
+      {
+        for(int j = 0; j < puzzle[i].length; j ++)
+        {
+          key[i][j] = puzzle[i][j];
+        }
+      }
     }
     private boolean placeOneWordInPuzzle(int ix_word)
     {
@@ -74,7 +89,7 @@ public class PuzzleMaker {
         }
         return false;
     }
-    public String toString()
+    public String output()
     {
         String output = "";
         
@@ -96,12 +111,40 @@ public class PuzzleMaker {
         
         return output;
     }
+    public String outputKey()
+    {
+        String output = "";
+        
+        for(int y = 0 ; y <= Words.SizeY - 1; y += 1)
+        {
+            for(int x = 0 ; x <= Words.SizeX - 1; x += 1)
+            {
+                if(key[y][x] == puzzle[y][x])
+                {
+                  output += "<span style=\"color:red\">" + puzzle[y][x] + "</span>";
+                }
+                else
+                  output += puzzle[y][x];
+                if(x == Words.SizeX - 1)
+                {
+                    output += "<br />";
+                }
+                else
+                {
+                    output += ' ';
+                }
+            }
+        }
+        
+        return output;
+    }
     
     private ArrayList<WPI> genAllPossWPIsForWord(int ix_word)
     {
         ArrayList<WPI> all_wpis = new ArrayList<>();
         
         int ori_x_max = Words.SizeX - Words.words.get(ix_word).length();
+        int ori_x_min = 0 + Words.words.get(ix_word).length();
         
         for (int y = 0; y <= Words.SizeY - 1;  ++y)
         {
@@ -109,15 +152,24 @@ public class PuzzleMaker {
             {
                 all_wpis.add(new WPI(new Point(x, y), DIR_RIGHT));
             }
+            for(int x = Words.SizeX - 1; x >= ori_x_min; -- x)
+            {
+              all_wpis.add(new WPI(new Point(x, y), DIR_LEFT));
+            }
         }
         
         int ori_y_max = Words.SizeY - Words.words.get(ix_word).length();
+        int ori_y_min = 0 + Words.words.get(ix_word).length();
         
         for (int x = 0; x <= Words.SizeX - 1;  ++x)
         {
             for (int y = 0; y <= ori_y_max; ++y)
             {
                 all_wpis.add(new WPI(new Point(x, y), DIR_DOWN));
+            }
+            for (int y = Words.SizeY - 1; y >= ori_y_min; --y)
+            {
+                all_wpis.add(new WPI(new Point(x, y), DIR_UP));
             }
         }
         
@@ -136,6 +188,17 @@ public class PuzzleMaker {
                     return false;
             }
         }
+        else if (wpi.dir == DIR_LEFT)
+        {
+            for (int i = 0; i < Words.words.get(ix_word).length();  ++i)
+            {
+                char whats_here = puzzle[wpi.origin.y][wpi.origin.x - i];
+                char my_letter = Words.words.get(ix_word).charAt(i);
+                
+                if (whats_here != NO_LETTER && whats_here != my_letter)
+                    return false;
+            }
+        }
         
         else if (wpi.dir == DIR_DOWN)
         {
@@ -147,6 +210,17 @@ public class PuzzleMaker {
                 if (whats_here != NO_LETTER && whats_here != my_letter)
                     return false;
             }
+        }
+        else if (wpi.dir == DIR_UP)
+        {
+          for (int i = 0; i < Words.words.get(ix_word).length();  ++i)
+          {
+              char whats_here = puzzle[wpi.origin.y - i][wpi.origin.x];
+              char my_letter = Words.words.get(ix_word).charAt(i);
+              
+              if (whats_here != NO_LETTER && whats_here != my_letter)
+                  return false;
+          }
         }
         return true;
     }
@@ -160,11 +234,25 @@ public class PuzzleMaker {
                 puzzle [wpi.origin.y][wpi.origin.x + i] = Words.words.get(ix_word).charAt(i);
             }
         }
+        if (wpi.dir == DIR_LEFT)
+        {
+            for (int i = 0; i < Words.words.get(ix_word).length(); ++i)
+            {
+                puzzle [wpi.origin.y][wpi.origin.x - i] = Words.words.get(ix_word).charAt(i);
+            }
+        }
         else if (wpi.dir == DIR_DOWN)
         {
             for (int i = 0; i < Words.words.get(ix_word).length(); ++i)
             {
                 puzzle [wpi.origin.y + i][wpi.origin.x] = Words.words.get(ix_word).charAt(i);
+            }
+        }
+        else if (wpi.dir == DIR_UP)
+        {
+            for (int i = 0; i < Words.words.get(ix_word).length(); ++i)
+            {
+                puzzle [wpi.origin.y - i][wpi.origin.x] = Words.words.get(ix_word).charAt(i);
             }
         }
         
@@ -208,6 +296,15 @@ public class PuzzleMaker {
                     puzzle[wpi_last_word.origin.y][wpi_last_word.origin.x + i] = NO_LETTER;
             }
         }
+        else if (wpi_last_word.dir == DIR_LEFT)
+        {
+            for (int i = 0; i < Words.words.get(ix_last_word).length(); ++i)
+            {
+                if (!isLocInAnyWordBefore(new Point(wpi_last_word.origin.x - i, 
+                    wpi_last_word.origin.y), ix_last_word))
+                    puzzle[wpi_last_word.origin.y][wpi_last_word.origin.x - i] = NO_LETTER;
+            }
+        }
         else if (wpi_last_word.dir == DIR_DOWN)
         {
             for (int i = 0; i < Words.words.get(ix_last_word).length(); ++i)
@@ -215,6 +312,15 @@ public class PuzzleMaker {
                 if (!isLocInAnyWordBefore(new Point(wpi_last_word.origin.x, 
                     wpi_last_word.origin.y + i), ix_last_word))
                     puzzle[wpi_last_word.origin.y + i][wpi_last_word.origin.x] = NO_LETTER;
+            }
+        }
+        else if (wpi_last_word.dir == DIR_UP)
+        {
+            for (int i = 0; i < Words.words.get(ix_last_word).length(); ++i)
+            {
+                if (!isLocInAnyWordBefore(new Point(wpi_last_word.origin.x, 
+                    wpi_last_word.origin.y - i), ix_last_word))
+                    puzzle[wpi_last_word.origin.y - i][wpi_last_word.origin.x] = NO_LETTER;
             }
         }
         
@@ -239,9 +345,19 @@ public class PuzzleMaker {
             if(wpi_w.origin.x <= loc.x && loc.x < wpi_w.origin.x + len_w && loc.y == wpi_w.origin.y)
                 return true;
         }
+        else if (wpi_w.dir == DIR_LEFT)
+        {
+            if(wpi_w.origin.x <= loc.x && loc.x < wpi_w.origin.x - len_w && loc.y == wpi_w.origin.y)
+                return true;
+        }
         else if (wpi_w.dir == DIR_DOWN)
         {
             if(loc.x == wpi_w.origin.x && wpi_w.origin.y <= loc.y && loc.y < wpi_w.origin.y + len_w)
+                return true;
+        }
+        else if (wpi_w.dir == DIR_DOWN)
+        {
+            if(loc.x == wpi_w.origin.x && wpi_w.origin.y <= loc.y && loc.y < wpi_w.origin.y - len_w)
                 return true;
         }
         

@@ -23,7 +23,9 @@ public class Words {
     
     public static void main(String[] args) {
         File fl = new File("output.html");
+        File fl_key = new File("outputkey.html");
         fl.delete();
+        fl_key.delete();
         Scanner sc = new Scanner(System.in);
         words = new ArrayList<String>();
         System.out.println();
@@ -38,8 +40,10 @@ public class Words {
         pm.pgen();
         try{
           PrintStream ps = new PrintStream(new FileOutputStream(fl, true), false);
+          PrintStream ps_key = new PrintStream(new FileOutputStream(fl_key, true), false);
+          //outputs puzzle
           ps.println("<h1 style=\"font-size: 80px; text-align: center;\">" + title + "</h1>");
-          ps.println("<p style=\"font-size: 40px; text-align: center;font-family: monospace;\" >" + pm + "</p>");
+          ps.println("<p style=\"font-size: 40px; text-align: center;font-family: monospace;\" >" + pm.output() + "</p>");
           ps.println("<h4 style=\"font-weight: normal; font-size: 50px; text-align: center;\">");
           for(int i = 0; i < words.size() - 1; i ++){
             ps.println(words.get(i) + ", ");
@@ -47,6 +51,17 @@ public class Words {
           ps.println(words.get(words.size() - 1));
           ps.println("</h4>");
           ps.close();
+          //outputs key
+          ps_key.println("<h1 style=\"font-size: 80px; text-align: center;\">" + title + " KEY" + "</h1>");
+          ps_key.println("<p style=\"font-size: 40px; text-align: center;font-family: monospace;\" >" + pm.outputKey() + "</p>");
+          ps_key.println("<h4 style=\"font-weight: normal; font-size: 50px; text-align: center;\">");
+          for(int i = 0; i < words.size() - 1; i ++){
+            ps_key.println(words.get(i) + ", ");
+          }
+          ps_key.println(words.get(words.size() - 1));
+          ps_key.println("</h4>");
+          ps_key.close();
+
           System.out.println();
           System.out.println("Successfully printed open output.html to view and print");
           System.out.println();

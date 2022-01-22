@@ -26,11 +26,13 @@ public class Words {
         fl.delete();
         Scanner sc = new Scanner(System.in);
         words = new ArrayList<String>();
+        System.out.println();
         System.out.println("Word Search Creator");
         System.out.print("Title of word search: ");
         String title = sc.nextLine();
         System.out.println();
         getSize(sc);
+        System.out.println();
         getWords(sc);
         PuzzleMaker pm = new PuzzleMaker();
         pm.pgen();
@@ -45,6 +47,9 @@ public class Words {
           ps.println(words.get(words.size() - 1));
           ps.println("</h4>");
           ps.close();
+          System.out.println();
+          System.out.println("Successfully printed open output.html to view and print");
+          System.out.println();
         }
         catch(Exception e){
           System.out.print(e);
@@ -68,7 +73,8 @@ public class Words {
     public static void getWords(Scanner sc)
     {   
         String cword = "";//current word
-        System.out.print("Enter \"enod\" when you finish entering words");
+        System.out.println("Enter \"enod\" when you finish entering words");
+        sc.nextLine();
         while(true)  
         {
             do
@@ -78,7 +84,7 @@ public class Words {
                 cword = cword.toUpperCase();
                 if(cword.length() > Math.max(SizeX, SizeY) || cword.length() < 3)
                 {
-                    System.out.println("Minimum length of 3 maximum length of " + Math.max(SizeX, SizeY));
+                    System.out.println("Minimum length of 3, Maximum length of " + Math.max(SizeX, SizeY));
                     cword = "";
                 }
                 else if(cword.matches("[A-Z]+") == false)

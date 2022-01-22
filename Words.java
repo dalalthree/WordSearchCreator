@@ -6,6 +6,7 @@
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
+import java.io.*;
 
 /**
  *
@@ -21,17 +22,33 @@ public class Words {
     public static int SizeY;
     
     public static void main(String[] args) {
-        // TODO code application logic here
-        //File fl = new File("/Users/ryandalal/Documents/josh is very annoying.txt");
-        //PrintStream ps = new PrintStream(new FileOutputStream(fl, true));
+        File fl = new File("output.html");
+        fl.delete();
         Scanner sc = new Scanner(System.in);
         words = new ArrayList<String>();
         System.out.println("Word Search Creator");
+        System.out.print("Title of word search: ");
+        String title = sc.nextLine();
+        System.out.println();
         getSize(sc);
         getWords(sc);
         PuzzleMaker pm = new PuzzleMaker();
         pm.pgen();
-        System.out.println(pm);
+        try{
+          PrintStream ps = new PrintStream(new FileOutputStream(fl, true), false);
+          ps.println("<h1 style=\"font-size: 80px; text-align: center;\">" + title + "</h1>");
+          ps.println("<p style=\"font-size: 40px; text-align: center;font-family: monospace;\" >" + pm + "</p>");
+          ps.println("<h4 style=\"font-weight: normal; font-size: 50px; text-align: center;\">");
+          for(int i = 0; i < words.size() - 1; i ++){
+            ps.println(words.get(i) + ", ");
+          }
+          ps.println(words.get(words.size() - 1));
+          ps.println("</h4>");
+          ps.close();
+        }
+        catch(Exception e){
+          System.out.print(e);
+        }
     }
     public static <T> int randomIndex(ArrayList<T> list)
     {
@@ -82,7 +99,6 @@ public class Words {
                 cword = "";
             }
         }
-        System.out.println(words);
     }
     
     public static void getSize(Scanner sc)//get the list of words from the user

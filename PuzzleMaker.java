@@ -17,7 +17,6 @@ public class PuzzleMaker {
     
     private final static char NO_LETTER = '?';
     
-    private static final int MAXTRIES = 100;//maximum anmout of times we trie and place a word into the puzzle
     private static final int DIR_RIGHT = 0;
     private static final int DIR_DOWN = 1;
     public static final int MIN_DIR = 0;
@@ -35,7 +34,6 @@ public class PuzzleMaker {
     {
         //first sort words longest to shortest
         Collections.sort(Words.words, new WordComparator());
-        System.out.println(Words.words);
         
         //base of creating za puzzle
         int num_words_in_puzzle = 0;
@@ -87,7 +85,7 @@ public class PuzzleMaker {
                 output += puzzle[y][x];
                 if(x == Words.SizeX - 1)
                 {
-                    output += '\n';
+                    output += "<br />";
                 }
                 else
                 {

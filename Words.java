@@ -3,9 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package words;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
@@ -27,10 +24,11 @@ public class Words {
         // TODO code application logic here
         //File fl = new File("/Users/ryandalal/Documents/josh is very annoying.txt");
         //PrintStream ps = new PrintStream(new FileOutputStream(fl, true));
+        Scanner sc = new Scanner(System.in);
         words = new ArrayList<String>();
         System.out.println("Word Search Creator");
-        getSize();
-        getWords();
+        getSize(sc);
+        getWords(sc);
         PuzzleMaker pm = new PuzzleMaker();
         pm.pgen();
         System.out.println(pm);
@@ -50,17 +48,15 @@ public class Words {
     {
         return PuzzleMaker.MIN_DIR + (int)Math.floor(Math.random() * (PuzzleMaker.MAX_DIR - PuzzleMaker.MIN_DIR + 1));
     }
-    public static void getWords()
-    {
-        Scanner sc = new Scanner(System.in);
-        
+    public static void getWords(Scanner sc)
+    {   
         String cword = "";//current word
-
+        System.out.print("Enter \"enod\" when you finish entering words");
         while(true)  
         {
             do
             {
-                System.out.print("Enter enod if you don't want anymore words; Word:");
+                System.out.print("Enter a word:");
                 cword = sc.nextLine();
                 cword = cword.toUpperCase();
                 if(cword.length() > Math.max(SizeX, SizeY) || cword.length() < 3)
@@ -89,10 +85,8 @@ public class Words {
         System.out.println(words);
     }
     
-    public static void getSize()//get the list of words from the user
+    public static void getSize(Scanner sc)//get the list of words from the user
     {
-        Scanner sc = new Scanner(System.in);
-        
         //x size
         SizeX = 0;
         do

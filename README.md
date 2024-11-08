@@ -10,4 +10,4 @@ Features:
 * Can detect and alert the user if creating a word search with the given size and words is impossible
 * Word searches are put in html files for easy distribution and printing
 * Auto-generated answer key
-
+* Uses a depth-first search approach
